@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/urfave/cli/v2"
-	"github.com/wojnosystems/poor-generic/pkg"
+	"github.com/wojnosystems/go-poor-generics/pkg/generic"
 	"io"
 	"log"
 	"os"
@@ -60,7 +60,7 @@ func main() {
 						return
 					}
 					defer outputDeferClose()
-					return pkg.Generate(context.String("package"), nameMap, source, outputFile)
+					return generic.Generate(context.String("package"), nameMap, source, outputFile)
 				},
 			},
 		},
