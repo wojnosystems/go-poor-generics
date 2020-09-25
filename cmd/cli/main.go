@@ -32,6 +32,10 @@ func main() {
 						Required: true,
 					},
 					&cli.StringFlag{
+						Name:    "headerFile",
+						Aliases: []string{"d"},
+					},
+					&cli.StringFlag{
 						Name:     "outFile",
 						Aliases:  []string{"o"},
 						Value:    "-",
@@ -60,7 +64,29 @@ func main() {
 						return
 					}
 					defer outputDeferClose()
-					return generic.Generate(context.String("package"), nameMap, source, outputFile)
+					_, err = outputFile.Write([]byte("package " + context.String("package") + "\n\n"))
+					if err != nil {
+						return
+					}
+
+					if "" != context.String("headerFile") {
+						var hf *os.File
+						hf, err = os.Open(context.String("headerFile"))
+						if err != nil {
+							return
+						}
+						func() {
+							defer func() {
+								_ = hf.Close()
+							}()
+							_, err = io.Copy(outputFile, hf)
+							if err != nil {
+								return
+							}
+						}()
+					}
+
+					return generic.Generate(nameMap, source, outputFile)
 				},
 			},
 		},

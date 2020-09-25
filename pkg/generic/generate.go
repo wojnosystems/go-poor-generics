@@ -10,11 +10,7 @@ type nameAndPrimitiveKeyword struct {
 	PrimitiveKeyword string
 }
 
-func Generate(packageName string, nameMap map[string]string, source *template.Template, writer io.Writer) (err error) {
-	_, err = writer.Write([]byte("package " + packageName + "\n\n"))
-	if err != nil {
-		return
-	}
+func Generate(nameMap map[string]string, source *template.Template, writer io.Writer) (err error) {
 	templateVars := nameAndPrimitiveKeyword{}
 	for name, primitiveKeyword := range nameMap {
 		templateVars.Name = name
