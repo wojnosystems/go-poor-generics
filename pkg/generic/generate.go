@@ -2,6 +2,7 @@ package generic
 
 import (
 	"io"
+	"sort"
 	"text/template"
 )
 
@@ -12,7 +13,15 @@ type nameAndPrimitiveKeyword struct {
 
 func Generate(nameMap map[string]string, source *template.Template, writer io.Writer) (err error) {
 	templateVars := nameAndPrimitiveKeyword{}
-	for name, primitiveKeyword := range nameMap {
+
+	sortedKeys := make([]string, 0, len(nameMap))
+	for key := range nameMap {
+		sortedKeys = append(sortedKeys, key)
+	}
+	sort.Strings(sortedKeys)
+
+	for _, name := range sortedKeys {
+		primitiveKeyword := nameMap[name]
 		templateVars.Name = name
 		templateVars.PrimitiveKeyword = primitiveKeyword
 		err = source.Execute(writer, templateVars)
